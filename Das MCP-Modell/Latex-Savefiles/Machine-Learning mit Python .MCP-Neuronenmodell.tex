@@ -1,0 +1,348 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\begin{document}
+\section{Das MCP-Modell}
+Dieses sehr frühe Modell des maschinellen Lernens beherrscht eine binäre Klassifizerung der Objekte. Entweder ist das zu-klassifizierende 
+Objekt ein Objekt dieser Klasse oder es ist ein Objekt einer anderen Klasse. Ein Modell dieser Art der Klassifizierung ist das MCP-Modell.
+Das MCP-Neuronenmodell basiert auf dem Modell einer Nervenzelle. Eine biologische Nervenzelle wird erst dann bei elektrischen Signalen
+aktiviert, wenn der Stromfluss einen gewissen Schwellenwert erreicht hat und mathematisch wird dies mit der Heaviside-Funktion modelliert.
+
+\begin{equation}
+\phi(z) =  \begin{Bmatrix}
+1, &  z \geq 0 \\
+-1, & z < 0
+\end{Bmatrix} 
+\end{equation}
+
+Kann das zu-klassifizierende Objekt in quantitative Eigenschaften übersetzt und Diese normiert werden, kann hieraus eine Matrix  $t \in \mathbb{R}^{n+1 \times 1} $gemacht werden. Dabei wird jedes Feature, also jede beschriebene Eigenschaft einer Reihe zugeordnet. Damit beinhaltet jede Zeile die gesamten Informationen eines Datenpakets. Dabei ist $x_{i}$ die $i$-te Eigenschaft des Objektes. In dieser Variante wird $x_{0}$ als $1$ definiert. Dieser hat den Zweck in dem Skalarprodukt den Schwellenwert wieder auszugeben. 
+
+\begin{equation}
+t = (1, x_{1}, ..., x_{n-1}, x_{n})
+\end{equation}
+
+Diese Matrix wird nun mit einem Gewichtsvektor $\omega \in {R}^{1 \times n+1}$multipliziert. Dieser Gewichtsvektor ist ein Vektor , wobei
+jeder Eintrag ein individuelles Gewicht für jede Eigenschaft festlegt. Der nullte Eintrag ist hierbei der Schwellenwert $z$, der so gespeichert wird.
+
+\begin{equation}
+\omega = \begin{pmatrix}
+-z\\
+y_{1}\\
+... \\
+y_{n-1} \\
+y_{n} \\
+\end{pmatrix} 
+\end{equation}
+
+Für die Multiplikation gilt also nach den Regeln der linearen Algebra:
+
+\begin{equation}
+V^{m \times n} \cdot W^{n \times k} = P^{m \times k}: \forall P_{g,h} : P_{g,h} = \sum_{ 1 \leq i \leq n} V_{g,i} W_{i, h} \implies \omega \cdot t = -z + \sum_{1 \leq i \leq n} x_{i}y_{i}
+\end{equation}
+
+Damit lässt sich aus den Gewichten die Heaviside-Funktion neu definieren.
+
+\begin{equation}
+\phi(\omega \cdot t) = \begin{Bmatrix}
+1, &  \sum_{1 \leq i \leq n} x_{i}y_{i} \geq z \\
+-1, & \sum_{1 \leq i \leq n} x_{i}y_{i} < z
+\end{Bmatrix} 
+\end{equation}
+ 
+Nun werden diese Schritte iterativ mit der Perzeptronen-Lernregel wiederholt und die Gewichte in $\omega$ angepasst. Die Berechnung des
+$k+1$-ten Gewichtes ist gegeben durch, wobei $y$ das richtige Ergebnis ist und $\eta$ die Lernrate ist:
+
+\begin{equation}
+w_{i, k+1} := w_{i, k} + \eta ( y - \phi{(\omega \cdot t)}) x_{i}
+\end{equation}
+
+Wird hier also die richtige Eingabe durch die Heaviside-Funktion gegeben, ergbt sich automatisch eine Änderung des Gewichts von Null.
+
+\begin{equation}
+w_{i, k+1} := w_{i, k} + \eta ( y - y) x_{i}
+\end{equation}
+
+\begin{equation}
+w_{i, k+1} := w_{i, k} 
+\end{equation}
+
+Ist das Ergebnis allerdings nicht das Richtige, so gibt es zwei Fälle. Wurde es als richtig vorhergesagt, war aber falsch, dann gilt:
+
+\begin{equation}
+w_{i, k+1} := w_{i, k} + \eta ( -1 -1 ) x_{i}
+\end{equation}
+
+\begin{equation}
+w_{i, k+1} := w_{i, k} - 2 \eta x_{i}
+\end{equation}
+
+Wurde es als falsch vorhergesagt, war aber richtig, dann gilt:
+
+\begin{equation}
+w_{i, k+1} := w_{i, k} + \eta ( 1 - -1 ) x_{i}
+\end{equation}
+
+\begin{equation}
+w_{i, k+1} := w_{i, k} + 2 \eta x_{i}
+\end{equation}
+
+Die jeweilige Änderung hängt also von der Lernrate und dem jeweiligen Wert der Eigenschaft ab. Umso größer beide Werte sind, umso größer
+und umso radikaler ist also die Änderung. Durch diesen Algorithmus für die Berechnung werden die Werte der Gewichte über die Iterationen
+verfeinert. Nach dem Trainieren kann nun mithilfe der Gewichte eine Eingabe bewertet werden. Durch die Verwendung validierender Daten wird das System getestet. Ist es dann erfolgreich genug, so wird das System angenommen.
+
+\section{Konvergenzbedingung der linearen Separabilität}
+
+Damit dieser Lernprozess konvergent ist, muss jeder einzelne Wert  der Gewichte auch gegen einen bestimmten Wert konvergieren. Dafür müssen die beiden Punktmengen durch eine Hyperebene getrennt werden. 
+Es seien zwei Punktmengen $P_{1} \in \mathbb{R}^{n}$ und  $P_{2} \in \mathbb{R}^{n}$ . Unter der Annahme es gibt eine Hyperbene
+$H$, die die beiden Punktmengen trennt, gibt es also auch zu jedem Punkt der beiden Mengen eine parallele Ebene $G$.
+
+\begin{equation}
+E: b = \sum^{n}_{i=1} a_{i} x_{i} : \forall x \in P_{1} \wedge \forall y \in P_{2} : \exists G : c =  \sum^{n}_{i=1} a_{i} x_{i}
+\end{equation}
+
+Da der Punkt also in der parallelen Ebene liegen muss gilt also nach Einsetzen des Punktes:
+
+\begin{equation}
+x \in G \implies c =  \sum^{n}_{i=1} a_{i} x_{i}^{i}
+\end{equation}
+
+Nun wählen wir einen der Achsenschnittpunkte beider Ebenen aus. Da sie parallel sind und die mindestens einen Schnittpunkt mit der Achse haben, da nicht alle Koeffizienten Null sind, gilt also für die Achsenschnittpunkte:
+
+\begin{equation}
+E: b = a_{k} x_{k}  
+\end{equation}
+
+\begin{equation}
+G : a_{k} x_{k} = \sum^{n}_{i=1} a_{i} x_{i}^{i}
+\end{equation}
+
+Nun kann man die beiden Schnittpunkte der parallelen Ebenen vergleichen. Liegt jeder Punkt $x$ aus $P_{1}$ nun in einer Ebene, die eine 
+negative Koordinatentransformation nutzt, so gilt:
+
+\begin{equation}
+b < \sum^{n}_{i=1} a_{i} x_{i}
+\end{equation}
+
+Dann gilt das Gegenteil für die andere Punktmenge.
+
+\begin{equation}
+b > \sum^{n}_{i=1} a_{i} y_{i}
+\end{equation}
+
+Setzt man nun beide Gleichungen ein, so gilt:
+
+\begin{equation}
+\sum^{n}_{i=1} a_{i} y_{i}^{i} < \sum^{n}_{i=1} a_{i} x_{i}^{i}
+\end{equation}
+
+Da dies nun für jedes Punktepaar gelten muss, gilt:
+
+\begin{equation}
+\forall x \in P_{1} \wedge \forall y \in P_{2} :  \sum^{n}_{i=1} a_{i} y_{i} < \sum^{n}_{i=1} a_{i} x_{i}
+\end{equation}
+
+Dies ist nun die Vorraussetzung für die Konvergenz dieses Lernmodells.
+
+\section{Der Beweis}
+Dafür teilen wir bei den Lerniterationen die Kalibirierung in zwei Teilen ein. Zuerst wird der Teil analysiert, der als richtig bestimmt werden soll. Für die Änderung der Gewichte gilt:
+
+\begin{equation}
+\omega_{i, k+1} = \omega_{i, k} + \eta(1 - \phi{(\omega \times X)})x_{i}
+\end{equation}
+
+Wenn nun hier jeder Änderungsterm Null ist, ändert sich also nichts mehr, da dann gilt:
+
+\begin{equation}
+\forall i:  \omega_{i, k+1} = \omega_{i, k} + 0
+\end{equation}
+
+\begin{equation}
+\forall i :\omega_{i, k+1} = \omega_{i, k}
+\end{equation}
+
+Damit gilt also für die Konvergenz dieser Teilsumme:
+
+\begin{equation}
+\forall X: 0 =  \eta(1 - \phi{(\omega \times X)})x_{i} \implies \forall X 1 = \phi{(\omega \times X)} \implies \forall x \omega \times X \geq 0
+\end{equation}
+
+Wendet man sich nun der anderen Teilmenge zu, gilt also:
+
+\begin{equation}
+\omega_{i, k+1} = \omega_{i, k} + \eta(-1 - \phi{(\omega \times Y)})y_{i}
+\end{equation}
+
+Wenn nun hier jeder Änderungsterm Null ist, ändert sich also nichts mehr, da dann gilt:
+
+\begin{equation}
+\forall i:  \omega_{i, k+1} = \omega_{i, k} + 0
+\end{equation}
+
+\begin{equation}
+\forall i :\omega_{i, k+1} = \omega_{i, k}
+\end{equation}
+
+Damit gilt also für die Konvergenz dieser Teilsumme:
+
+\begin{equation}
+\forall Y: 0 =  \eta(- 1 - \phi{(\omega \times Y)})y_{i} \implies \forall Y: -1 = \phi{(\omega \times X)} \implies \forall Y: \omega \times Y < 0
+\end{equation}
+
+Damit also nun beide Teilsummen konvergieren, gilt:
+
+\begin{equation}
+\forall Y \wedge \forall X: \omega \times Y < 0 \wedge  \omega \times X > 0 \implies \forall i :\omega_{i, k+1} = \omega_{i, k}
+\end{equation}
+
+Diese Bedingungen werden zusammengefasst.
+
+\begin{equation}
+\forall Y \wedge \forall X: \omega \times Y <   \omega \times X \forall i :\omega_{i, k+1} = \omega_{i, k}
+\end{equation}
+
+Damit ist gezeigt, dass dieses Modell konvergiert, sobald die zwei Datenmengen separabel sind. 
+
+\section{Logische Gatter mit dem Perzeptron}
+
+Es gibt drei logische Gatter, die es zu testen gilt. Dabei defininieren wir die zwei Outputs als ihre binären Wahrheitswerte. Um nun zu beweisen, dass es keinen Gewichtsvektor gibt, der die oben-genannte Konvergenzbedingung erfüllt. 
+\subsection{AND-Gatter}
+Die Punkte sind nun:
+\begin{equation}
+\begin{matrix}
+0 & 0 & 0\\
+1 & 0 & 0\\
+0 & 1 & 0 \\
+1 & 1 & 1 \\
+\end{matrix} 
+\end{equation}
+
+Daraus folgen die vier Gleichungen:
+
+\begin{equation}
+0 a_{1} + 0 a_{2} < a_{1} + a_{2}
+\end{equation}
+
+\begin{equation}
+1 a_{1} + 0 a_{2} < a_{1} + a_{2}
+\end{equation}
+
+\begin{equation}
+0 a_{1} + 1 a_{2} < a_{1} + a_{2}
+\end{equation}
+
+Daraus folgen die Gleichungen:
+
+\begin{equation}
+0 < a_{1} + a_{2}
+\end{equation}
+
+\begin{equation}
+0 < a_{2}
+\end{equation}
+
+\begin{equation}
+0 < a_{1} 
+\end{equation}
+
+Da diese Bedingungen alle miteinander konform sind, gibt es eine Konfiguration, die die Konvergenzbedingung erfüllt.
+
+\subsection{OR-Gatter}
+Die Punkte sind nun:
+\begin{equation}
+\begin{matrix}
+0 & 0 & 0\\
+1 & 0 & 1\\
+0 & 1 & 1 \\
+1 & 1 & 1 \\
+\end{matrix} 
+\end{equation}
+
+Daraus folgen die vier Gleichungen:
+
+\begin{equation}
+0 a_{1} + 0 a_{2} < a_{1} + a_{2}
+\end{equation}
+
+\begin{equation}
+0 a_{1} + 0 a_{2}<  a_{2}
+\end{equation}
+
+\begin{equation}
+0 a_{1} + 0 a_{2} < a_{1} 
+\end{equation}
+
+Daraus folgen die Gleichungen:
+
+\begin{equation}
+0 < a_{1} + a_{2}
+\end{equation}
+
+\begin{equation}
+0 < a_{2}
+\end{equation}
+
+\begin{equation}
+0 < a_{1} 
+\end{equation}
+
+Da diese Bedingungen alle miteinander konform sind, gibt es eine Konfiguration, die die Konvergenzbedingung erfüllt.
+
+\subsection{XOR-Gatter}
+
+Die Punkte sind nun:
+\begin{equation}
+\begin{matrix}
+0 & 0 & 0\\
+1 & 0 & 1\\
+0 & 1 & 1 \\
+1 & 1 & 0 \\
+\end{matrix} 
+\end{equation}
+
+Daraus folgen die vier Gleichungen:
+
+\begin{equation}
+0 a_{1} + 0 a_{2} < a_{1} 
+\end{equation}
+
+\begin{equation}
+0 a_{1} + 0 a_{2}<  a_{2}
+\end{equation}
+
+\begin{equation}
+a_{1} + a_{2} < a_{1} 
+\end{equation}
+
+
+\begin{equation}
+a_{1} + a_{2} < a_{2} 
+\end{equation}
+
+Daraus folgen die Gleichungen:
+
+\begin{equation}
+0 < a_{1}
+\end{equation}
+
+\begin{equation}
+0 < a_{2}
+\end{equation}
+
+\begin{equation}
+0 > a_{1} 
+\end{equation}
+
+\begin{equation}
+0 > a_{2} 
+\end{equation}
+Da diese Bedingungen nicht miteinander konform sind, gibt es keine Konfiguration, die die Konvergenzbedingung erfüllt.
+\end{document}

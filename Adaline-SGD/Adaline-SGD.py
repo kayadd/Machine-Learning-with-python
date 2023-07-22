@@ -106,7 +106,7 @@ if True:
         return X
 
 
-class AdalineGD:
+class AdalineSGD:
     """Perzeptron-Klassifizierer"""
     # Lernrate
     eta: float
@@ -123,10 +123,18 @@ class AdalineGD:
     eta = 0
     n_iter = 0
 
-    def __init__(self, peta, pn_iter):
+    shuffle = True
+    random_state = None
+
+    def __init__(self, peta, pn_iter, shuffle, random_state):
+        self.w_initialized = False
+        self.shuffle = shuffle
         self.eta = peta
         self.n_iter = pn_iter
+
         self.cost_ = []
+        if random_state:
+            np.random.seed(random_state)
 
     def fit(self, X, Y):
         """
@@ -140,108 +148,115 @@ class AdalineGD:
         """
         # Initialisiert einen Gewichtsarray der Länge von 1 + der.
         # Anzahl der Objekte.
-        self.w_ = np.zeros(1 + X.shape[1])
+        self._initialize_weights(X.shape[1])
 
-        # Initialisiert die Liste für die Anzahl der Fehler pro Epoche.
+        # Initialisiert die Fehlerliste
         self.cost_ = []
 
         # Wiederholt so lange, wie Iterationen vorgegeben sind.
         for _ in range(self.n_iter):
-            # Gibt den Term der Aktivierungsfunktion zurück
-            output = self.net_input(X)
-
-            # Initialisiert den Fehlerterm.
-            errors = Y-output
-
-            # Verändert die Gewichte durch Addition des Wertes der Lernregel.
-            self.w_[1:] += self.eta * X.T.dot(errors)
-            # Verändert den Schwellenwert.
-            self.w_[0] += self.eta * errors.sum()
-
-            cost = (errors**2).sum() / 2.0
-
-            self.cost_.append(cost)
+            # Wenn das Shuffeln vorgegeben ist, wird der Datensatz geshuffelt.
+            if self.shuffle:
+                X, Y = self._shuffle(X, Y)
+            cost = []
+            # Aktualisiert die Gewichte mithilfe der Trainingsdaten.
+            for xi, target in zip(X, Y):
+                cost.append(self._update_weights(xi, target))
+            # Berechnet den durchschnittlichen Fehlerterm und speichert ihn
+            # für jede Epoche.
+            avg_cost = sum(cost) / len(Y)
+            self.cost_.append(avg_cost)
 
         return self
 
+    def partial_fit(self, X, Y):
+        """Trainiert das Modell ohne die Gewichte neu initialisieren zu müssen."""
+        # Wenn die Gewichte des Modells nicht initialisiert sind, werden sie initialisiert.
+        if not self.w_initialized:
+            self._initialize_weights(X.shape[1])
+        # Wenn die Länge der ersten Liste im der zusammengefügten Liste Y größer als 1 ist
+        if Y.ravel().shape[0] > 1:
+            # Werden die Gewichte aus der Liste aktualisiert
+            for xi, target in zip(X, Y):
+                self._update_weights(xi, target)
+        # Sind es nur einzelne Werte und keine Liste, mit der das Modell aktualisiert wird, werden
+        # diese einfach zum aktualisieren genutzt.
+        else:
+            self._update_weights(X, Y)
+        return self
+
+    def _shuffle(self, X, Y):
+        """Permutiert die Trainingsdaten."""
+        r = np.random.permutation(len(Y))
+        return X[r], Y[r]
+
+    def _initialize_weights(self, m):
+        """Initialisiert die Gewichte."""
+        # Erschafft einen neuen Gewichtsarray und setzt die Werte auf initialisiert.
+        self.w_ = np.zeros(1 + m)
+        self.w_initialized = True
+
+    def _update_weights(self, xi, target):
+        """Aktualisiert die Gewichte."""
+        # Berechnet die Aktivierungsfunktion
+        output = self.net_input(xi)
+        # Berechnet die Abweichung vom erwarteten Wert
+        error = (target - output)
+        # Aktualisiert jedes Gewicht mit der Lernrate multipliziert mit dem Fehler.
+        self.w_[1:] += self.eta * xi.dot(error)
+        # Aktualisiert den Schwellenwert
+        self.w_[0] += self.eta * error
+        # Speichert die Gewichtsänderung als Art der Varianz.
+        cost = 0.5 * error**2
+        # Gibt die Gewichtsänderung zurück.
+        return cost
+
     def net_input(self, X):
-        """Nettoeingabe berechnen"""
-
-        # Berechnet das Skalarprodukt zwischen dem Vektor und den Gewichten. Die Gewichte sind alle, bis auf das
-        # Erste nicht enthalten. Danach wird der Wert in Zelle 0 addiert um den ersten negativen Term des
-        # Schwellenwertes Im Skalarprodukt wieder auszugleichen. Somit kann nun die Heaviside-Funktion genutzt werden,
-        # Um die Differenz zum Schwellenwert zu bestimmen.
-
+        """Rechnet den Input aus."""
+        # Gibt den Aktivierungsterm zurück.
         return np.dot(X, self.w_[1:]) + self.w_[0]
 
     def activation(self, X):
+        """Compute linear activation"""
+        # Gibt die Aktivierungsfunktion aus.
         return self.net_input(X)
 
     def predict(self, X):
-        """Klassenbezeichnung zurückgeben"""
-
-        # Die Heaviside-Funktion; Gibt bei jedem positiven Wert oder Null eine Eins und bei jedem negativen Wert zurück.
-        # Diese Resultate werden in einer Liste zurückgegeben.
+        """Gibt die Vorhersage des Adaline-Modells aus."""
+        # Entscheidet bei jedem Wert mithilfe der Heaviside-Funktion die Vorhersage.
         return np.where(self.activation(X) >= 0.0, 1, -1)
 
 
-# Visualisiert den Fehler
-if True:
-    # Kreiert zwei Unterplots
-    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(8, 4))
+# Standardisiert die Daten.
+X_std = standardize.standardizeData(x)
 
-    # Trainiert das Modell mit einer Lernrate von 0.01.
-    ada1 = AdalineGD(pn_iter=10, peta=0.01).fit(x, y)
-    # Setzt die Grenzen und das Symbol für diesen Plot.
-    ax[0].plot(range(1, len(ada1.cost_) + 1), np.log10(ada1.cost_), marker='o')
+# Initialisiert das Modell.
+ada = AdalineSGD(pn_iter=30, peta=0.01, random_state=1, shuffle=True)
+# Trainiert das Modell mit den Daten.
+ada.fit(X_std, y)
 
-    # Setzt das Label der Y-Achse auf "Epochen".
-    ax[0].set_xlabel('Epochen')
-    # Setzt das Label der Y-Achse auf "logarithmierter Fehler".
-    ax[0].set_ylabel("logarithmierter Fehler")
-    # Setzt den Titel des Plots
-    ax[0].set_title('Adaline - Lernrate von 0.01')
+# Initialisiert und speichert den Contourplot.
+plot_decision_regions(X_std, y, classifier=ada)
+# Setzt den Titel des Plots auf den Namen des Modells.
+plt.title('Adaline - Stochastic Gradient Descent')
+# Setzt das Label der X-Achse auf "Kelchlänge [standardisiert]".
+plt.xlabel('Kelchlänge [standardisiert]')
+# Setzt das Label der Y-Achse auf "Blütenblattlänge [standardisiert]".
+plt.ylabel('Blütenblattlänge [standardisiert]')
+# Platziert die Legende in der oberen linken Ecke
+plt.legend(loc='upper left')
+# Visualisiert den Plot.
+plt.show()
 
-    # Trainiert das Modell mit einer Lernrate von 0.0001.
-    ada2 = AdalineGD(pn_iter=10, peta=0.0001).fit(x, y)
-    ax[1].plot(range(1, len(ada2.cost_) + 1), ada2.cost_, marker='o')
-    # Setzt das Label der Y-Achse auf "Epochen".
-    ax[1].set_xlabel('Epochen')
-    # Setzt das Label der Y-Achse auf "Fehler".
-    ax[1].set_ylabel('Fehler')
-    ax[1].set_title('Adaline - Lernrate von 0.0001')
+# Setzt die Grenzen des Plots auf die Grenzen der Kostenliste
+plt.plot(range(1, len(ada.cost_) + 1), ada.cost_, marker='o')
+# Setzt das Label der X-Achse auf "Epochen".
+plt.xlabel('Epochen')
+# Setzt das Label der Y-Achse auf "Durchschnittlicher Korrekturterm".
+plt.ylabel('Durchschnittlicher Korrekturterm')
 
-    # Visualisiert den Plot.
-    plt.show()
+# Visualisiert den Plot.
+plt.show()
 
-if True:
-    # Standardisiert die Daten
-    X_std = standardize.standardizeData(x)
-
-    # Initialisiert das Modell
-    ada = AdalineGD(pn_iter=15, peta=0.01)
-
-    # Trainiert das Modell
-    ada.fit(X_std, y)
-
-    # Erstellt eine Colourmap
-    plot_decision_regions(X_std, y, classifier=ada)
-    plt.title('Adaline - Gradient Descent')
-    # Setzt das Label der X-Achse auf "Kelchblattlänge [Standardisiert]".
-    plt.xlabel('Kelchblattlänge [Standardisiert]')
-    # Setzt das Label der Y-Achse auf "Blütenblattlänge [Standardisiert]".
-    plt.ylabel('Blütenblattlänge [Standardisiert]')
-    # Setzt die Legende in die Ecke oben links
-    plt.legend(loc='upper left')
-    # Zeigt den Plot
-    plt.show()
-
-    # Setzt die Grenzen des Plots
-    plt.plot(range(1, len(ada.cost_) + 1), ada.cost_, marker='o')
-    # Setzt das Label der X-Achse auf "Epochen".
-    plt.xlabel('Epochen')
-    # Setzt das Label der Y-Achse auf "Fehler".
-    plt.ylabel('Fehler')
-
-    # Zeigt den Plot
-    plt.show()
+# Trainiert das Modell nachträglich mit weiteren Daten.
+ada = ada.partial_fit(X_std[0, :], y[0])

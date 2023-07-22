@@ -1,0 +1,32 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\begin{document}
+\section{Das AdalineSGD-Modell}
+Das AdalineSGD-Modell ist eine Verbesserung des Adaline-Modells. Die Funktion, die es zu minimieren gilt ist nun nicht mehr die Summe
+aller Fehlerterme, sondern nur die Fehlerterme der jeweiligen Eingabe. Dieses Modell heißt deswegen Stochastisches Gradientenmodell, oder besser beschrieben Online-Gradientenabstiegsmodell, weil dort die Menge der Daten nicht immer gesamt abgerufen werden muss um bei neuen
+Daten die Gewichte zu ändern. Somit ist es einfacher bei großen Datenmengen zu nutzen, hat aber natürlich den Nachteil des staistischen Rauschens, da diese Methode ungenauer ist.
+
+Der Fehlerterm ändert sich also zu:
+
+\begin{equation}
+\Delta \omega = \eta (y^{(i)} - \theta{(z^{(i)})}) x^{(i)}
+\end{equation}
+
+Um die Anpassung bei größeren Datenmengen und weiteren Daten zu verbessern wird die Lernrate bei manchen Modellen dynamisch gewählt.
+
+\begin{equation}
+\frac{c_1}{[Anzahl\:der\:Iterationen] + c_2}
+\end{equation}
+
+Dieser Wert wird umso kleiner, umso öfter das Modell traineirt wird. Somit steigt die Genauigkeit, da die kleinste Einheit dieser inkrementellen ZUnahme immer kleiner wird.
+\end{document}

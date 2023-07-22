@@ -1,0 +1,53 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\begin{document}
+\section{Das Adaline-Modell}
+Das Adaline-Modell ist eine Verbesserung des PMC-Modells, ersetzt aber die Zielfunktion durch eine Funktion, die keine Stufenfunktion ist und die Aktivierungsfunkton ist gleich der Funktion des Skalarprodukts der gewichte und der Eigenschaften. Wir definieren hier eine Straffungsfunktion als Zielfunktion, die hier die halbe Varianz, geteilt durch die Wahrscheinlichkeit dieses Ereignisses ist.
+
+\begin{equation}
+J(w) = \frac{1}{2} \sum_{j}(y^{(j)} - \theta{(z^{(j)})})^2
+\end{equation}
+ 
+Um hier diese Zielfunktion zu minimieren wird das Gradientenverfahren angewendet. Das Gradientenverfahren hat gewisse Ähnlichkeit mit
+dem Newtonverfahren, denn es bewegt sich in die Richtung der Steigung, während die Länge der Bewegung vond der Lernrate$\eta$ und der Steigung selbst abhängt. Somit wird diese Funktion maximiert. Damit wird die Gewichtungsänderung neu definiert. 
+
+\begin{equation}
+\Delta w = -\eta \nabla J(w)
+\end{equation}
+
+Um nun die Gewichtungsfunktion nach den Gewichtungen abzuleiten, wird die partielle Ableitung benötigt. Durch die Kettenregel gilt:
+
+\begin{equation}
+\frac{\partial J}{\partial w_{j}} = 2 \frac{1}{2} \sum_{j}(y^{(j)} - \theta{(z^{(j)})}) \frac{\partial (y^{(j)} - \theta{(z^{(j)})})}{\partial w_{j}}
+\end{equation}
+
+\begin{equation}
+\frac{\partial J}{\partial w_{j}} = \sum_{j}(y^{(j)} - \theta{(z^{(j)})}) \frac{\partial ( - \theta{(z^{(j)})})}{\partial w_{j}}
+\end{equation}
+
+Durch den Ersatz der Aktivierungsfunktion ergibt sich:
+\begin{equation}
+\frac{\partial J}{\partial w_{j}} = \sum_{j}(y^{(j)} - \theta{(z^{(j)})}) \frac{\partial ( - (z^{(j)}))}{\partial w_{j}}
+\end{equation}
+
+\begin{equation}
+\frac{\partial J}{\partial w_{j}} = \sum_{j}(y^{(j)} - \theta{(z^{(j)})}) x^{i}_{j}
+\end{equation}
+
+Damit lässt sich jetzt nun der Änderungsterm angeben.
+
+\begin{equation}
+\Delta w = -\eta \sum_{j}(y^{(j)} - \theta{(z^{(j)})}) x^{i}_{j}
+\end{equation}
+
+\end{document}
