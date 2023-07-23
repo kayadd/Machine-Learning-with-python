@@ -66,10 +66,10 @@ mit der Wahrscheinlichkeit der Klassifizierung als nicht-zugehörig mit der Anza
 \ln(l(w)) = \sum_{i = 1}^n (y)^j \ln(p(\omega \cdot x^i)) + (1-(y)^j) \ln(1-p(\omega\cdot x^i))
 \end{equation} 
 
-Nun definieren wir diese Funktion als Zielfunktion und verwenden dieser Gradient-Descent-Verfahren des Adaline-Modells geht. Damit berechnet sich ein einzelner Term zu:
+Nun definieren wir diese Funktion als Zielfunktion und verwenden das Gradient-Descent-Verfahren des Adaline-Modells. Damit berechnet sich ein einzelner Term zu:
 
 \begin{equation}
-\Delta \omega = -\eta \frac{\partial}{\partial \omega^i}  (y)^j \ln(p(\omega \cdot x^i)) + (1-(y)^j) \ln(1-p(\omega\cdot x^i))
+\Delta \omega = \eta \frac{\partial}{\partial \omega^i}  (y)^j \ln(p(\omega \cdot x^i)) + (1-(y)^j) \ln(1-p(\omega\cdot x^i))
 \end{equation}
 
 \begin{equation}
@@ -77,31 +77,32 @@ Nun definieren wir diese Funktion als Zielfunktion und verwenden dieser Gradient
 \end{equation}
 
 \begin{equation}
-\Delta \omega = -\eta \frac{\partial}{\partial \omega^i}  (y)^j (\omega \cdot x - \ln(1+e^{\omega \cdot x}) + (1-(y)^j) \ln( \frac{1+e^{\omega \cdot x}-e^{\omega \cdot x}}{1+e^{\omega \cdot x}})
+\Delta \omega = \eta \frac{\partial}{\partial \omega^i}  (y)^j (\omega \cdot x - \ln(1+e^{\omega \cdot x}) + (1-(y)^j) \ln( \frac{1+e^{\omega \cdot x}-e^{\omega \cdot x}}{1+e^{\omega \cdot x}})
 \end{equation}
 
 \begin{equation}
-\Delta \omega = -\eta \frac{\partial}{\partial \omega^i}  (y)^j (\omega \cdot x - \ln(1+e^{\omega \cdot x}) + (1-(y)^j) \ln( \frac{1}{1+e^{\omega \cdot x}})
-\end{equation}
-
-
-\begin{equation}
-\Delta \omega = -\eta \frac{\partial}{\partial \omega^i}  (y)^j (\omega \cdot x - \ln(1+e^{\omega \cdot x}) + (1-(y)^j) (-\ln(1+e^{\omega \cdot x}))
+\Delta \omega =-\eta \frac{\partial}{\partial \omega^i}  (y)^j (\omega \cdot x - \ln(1+e^{\omega \cdot x}) + (1-(y)^j) \ln( \frac{1}{1+e^{\omega \cdot x}})
 \end{equation}
 
 
 \begin{equation}
-\Delta \omega = -\eta \frac{\partial}{\partial \omega^i}  ((y)^j \omega \cdot x - \ln(1+e^{\omega \cdot x}))
+\Delta \omega = \eta \frac{\partial}{\partial \omega^i}  (y)^j (\omega \cdot x - \ln(1+e^{\omega \cdot x}) + (1-(y)^j) (-\ln(1+e^{\omega \cdot x}))
 \end{equation}
 
 
 \begin{equation}
-\Delta \omega = -\eta  ( x^{i}(y)^j  - \frac{1}{1+e^{\omega \cdot x}} e^{\omega \cdot x} x^{i})
+\Delta \omega = \eta \frac{\partial}{\partial \omega^i}  ((y)^j \omega \cdot x - \ln(1+e^{\omega \cdot x}))
+\end{equation}
+
+
+\begin{equation}
+\Delta \omega = \eta  ( x^{i}(y)^j  - \frac{1}{1+e^{\omega \cdot x}} e^{\omega \cdot x} x^{i})
 \end{equation}
 
 \begin{equation}
-\Delta \omega = \eta  x^{i} (p(\omega \cdot x)- j^{i})
+\Delta \omega = \eta  x^{i} ( j^{i}- p(\omega \cdot x))
 \end{equation}
 
+Dies ist der gleiche Korrekturterm wie im Adaline-Modell.
 
 \end{document}
