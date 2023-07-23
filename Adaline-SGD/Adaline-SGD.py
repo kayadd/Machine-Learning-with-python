@@ -1,17 +1,17 @@
 # Importiert Numpy für die Funktionen der linearen Algebra.
 import numpy as np
 
-# Importiert pandas für die Datenverarbeitung
+# Importiert pandas für die Datenverarbeitung.
 import pandas as pd
 
 # Importiert pyplot um die Daten graphisch darzustellen.
 import matplotlib.pyplot as plt
 
-# Importiert ListedColormap für die Visualisierung der Datengrenze
+# Importiert ListedColormap für die Visualisierung der Datengrenze.
 from matplotlib.colors import ListedColormap
 
-# Importiert die Standardisierte Variante
-import standardize
+# Importiert die Pre-Data-Datei.
+import preLearn
 
 # Importiert die Testdaten
 if True:
@@ -51,8 +51,6 @@ if True:
 # Definiert eine Funktion zur Visualisierung der linearen Grenze.
 if True:
     def plot_decision_regions(X, Y, classifier, resolution=0.02):
-        # Markierungen und Farben werden eingestellt.
-
         # Initialisiert ein Tupel aus den Markierungen.
         markers = ("s", "x", "o", "^", "∨")
 
@@ -228,7 +226,7 @@ class AdalineSGD:
 
 
 # Standardisiert die Daten.
-X_std = standardize.standardizeData(x)
+X_std = preLearn.stdSingle(x)
 
 # Initialisiert das Modell.
 ada = AdalineSGD(pn_iter=30, peta=0.01, random_state=1, shuffle=True)
@@ -243,7 +241,7 @@ plt.title('Adaline - Stochastic Gradient Descent')
 plt.xlabel('Kelchlänge [standardisiert]')
 # Setzt das Label der Y-Achse auf "Blütenblattlänge [standardisiert]".
 plt.ylabel('Blütenblattlänge [standardisiert]')
-# Platziert die Legende in der oberen linken Ecke
+# Platziert die Legende in der oberen linken Ecke.
 plt.legend(loc='upper left')
 # Visualisiert den Plot.
 plt.show()

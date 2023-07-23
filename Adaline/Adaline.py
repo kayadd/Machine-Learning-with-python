@@ -10,8 +10,7 @@ import matplotlib.pyplot as plt
 # Importiert ListedColormap für die Visualisierung der Datengrenze
 from matplotlib.colors import ListedColormap
 
-# Importiert die Standardisierte Variante
-import standardize
+import preLearn
 
 # Importiert die Testdaten
 if True:
@@ -216,7 +215,7 @@ if True:
 
 if True:
     # Standardisiert die Daten
-    X_std = standardize.standardizeData(x)
+    X_std = preLearn.stdSingle(x)
 
     # Initialisiert das Modell
     ada = AdalineGD(pn_iter=15, peta=0.01)
