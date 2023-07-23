@@ -21,6 +21,7 @@ lr.fit(x_train_std, y_train)
 # Initialisiert den Plot.
 preLearn.plot_decision_regions(x_combined_std, y_combined, classifier=lr, test_idx=range(105, 150), resolution=0.02)
 
+#
 plt.xlabel('Blütenblattbreite [standardisiert]')
 # Setzt das Label der Y-Achse auf "Blütenblattlänge [standardisiert]".
 plt.ylabel('Blütenblattlänge [standardisiert]')

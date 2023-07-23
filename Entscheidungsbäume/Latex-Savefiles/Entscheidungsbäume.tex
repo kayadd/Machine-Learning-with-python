@@ -1,0 +1,56 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\begin{document}
+\section{Enzscheidungsbäume}
+
+Das Maschinelle Lernen durch Entscheidungsbäume läuft so ab, dass Daten nach Ja-Nein-Fragen bezüglich der Features in bestimmte
+Kindknoten einsortiert werden, bis eine eindeutuge Trennung der Datensets vorliegt. Diese Fragen werden so optimiert, dass der größtmögliche 
+Informationsgewinn dabei entsteht. Praktisch gibt es also für jeden Knoten eine Eingabe und eine Funktion, die es zu maximieren gilt. Damit solche Bäume aber keine allzu-große Tiefe erreichen, wird diese Tiefe begrenzt.\\
+Um nun den Informationsgewinn genauer zu definieren wird der Begriff der Unreinheit genutzt. Unreinheit ist hierbei die ein Maß der Trennung richtiger und falscher Klassifizierung, die später durch Funktionen genauer definiert werden. Der Informationsgewinn berechnet sich also aus dem
+Verlust der Falsch-Klassifizierungen vom Eltern- zum Kindknoten.
+
+\begin{equation}
+IG(f) = I(D_p) - \sum_{j = 1}^{n}  \frac{N_j}{N_p} I(D_j)
+\end{equation}
+
+Dabei ist der Bruch in der Summe ein Maß für die Aufteilung der Daten in jedem Kindknoten. Eine kleine Anzahl an Klassifizierungen führt also auch zu schlechterer Unreinheit.
+
+Nun gibt es ebenfalls verscheidene Wege die Unreinhet zu messen.
+
+\subsection{Die Entropie}
+
+Die Entropie ist ein Maß der Verteilung der Daten im Baum und die Etropie ist maximal, wenn die Daten auf alle Knoten gleichmäßig verteilt sind und ist mit $k(i|t)$ als der Anzahl der Daten im $t$ Knoten mit der Klassifizierung $i$ definiert als:
+
+\begin{equation}
+I_{E} = - \sum_{i = 1}^c k(i|t) \log_2(k(i|t))
+\end{equation}
+
+\subsection{Der Gini-Koeffizient}
+Der Gini-Koeffizient ist ebenfalls ein Maß der Verteilung der Daten, ganz ähnlich der Entropie, minimiert aber die Wahrscheinlichkeit einer Fehlklassifizierung.
+
+\begin{equation}
+I_{G} = 1 - \sum_{i = 1}^c k(i|t)^2
+\end{equation}
+
+\subsection{Der Klassifizierungsfehler}
+Der Klassifizierungsfehler dient dabei eher der Fehlerbehandlung, da es weniger sensitiv als die oben-genannten Alternativen ist.
+\begin{equation}
+I_{K} = 1 - \max( k(i|t) )
+\end{equation}
+
+\subsection{Random-Forests}
+
+Das Random-Forests-Verfahren generiert dabei aus Teilmengen der Trainingsdaten einzelne Entscheidungsbäume. Es werden zufällige Features der Daten gewält und der Entscheidungsbaum teilt sich dann anhand des Merkmales, welches den größten Informationsgewinn zulässt. Am Ende werden dann durch eine Mehrheitsentscheidungen die Merkmale ausgewählt, die den Informationsgewinn maximieren.
+
+
+\end{document}
