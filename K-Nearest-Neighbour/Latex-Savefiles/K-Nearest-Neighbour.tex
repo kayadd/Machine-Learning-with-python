@@ -1,0 +1,26 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\begin{document}
+\section{K-Nearest-Neighbour}
+
+Dieses Maschinelle Lernen platziert die Daten in einem $n$-dimensionalen Raum und schaut sich die nächsten $k$-Nachbarn an. Welche Nachbarn das sind entscheidet die Metrik, also eine Abstandsbestimmung in einem Koordinatensystem. Nach Auswahl der nächsten $k$-Nachbarn 
+werden die Klassizierungen dieser Nachbarn ausgewertet und durch einen Mehrheitsentscheid entschieden, welche Klassifizierung der
+neue Datenpunkt bekommt. \\
+Die häufigste Metrik ist die Minkowski-Metrik, da sie für den $n$-dimensionalen euklidischen Raum gilt.
+
+\begin{equation}
+D(x,y) = (\sum_{i=1}^n |x_i - y_i|^p )^{\frac{1}{p}}
+\end{equation}
+
+$p$ gibt hierbei an, ob es entweder die euklidische oder die Manhattendistanz ist.
+\end{document}

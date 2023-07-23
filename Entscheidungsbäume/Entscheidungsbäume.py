@@ -35,7 +35,7 @@ def error(p):
     return 1 - np.max([p, 1 - p])
 
 
-# Initialisiert das Entscheidungsbaum-Modell.
+# Initialisiert das Entscheidungsbaum-Modell mit einer Maximaltiefe von 3 und dem Unreinheitskriterium der Emtropy.
 tree = sklearn.tree.DecisionTreeClassifier(criterion='entropy', max_depth=3, random_state=0)
 # Trainiert das Modell.
 tree.fit(x_train, y_train)
@@ -57,7 +57,7 @@ plt.legend(loc='upper left')
 # Visualisiert den Plot.
 plt.show()
 
-# Initialisiert das Forest-Modell.
+# Initialisiert das Forest-Modell mit dem Unreinheitskriterium der Entropie.
 forest = sklearn.ensemble.RandomForestClassifier(criterion='entropy',
                                                  n_estimators=10,
                                                  random_state=1,
