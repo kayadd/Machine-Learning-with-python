@@ -1,0 +1,79 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\begin{document}
+\section{Datenvorverarbeitung}
+
+Bevor überhaupt ein Maschinelles Lernen stattfinden kann müssen die Daten erst einmal vorverarbeitet
+werden. Diese Vorverarbeitung beinhaltet das ergänzen fehlender Daten und die Reduktion der Menge an 
+Features, die es zu verarbeiten gilt. \\
+Die fehlenden Daten in einem Datensatz können nicht einfach ignoriert werden, somit müssen die fehlenden Daten
+entweder ersetzt oder dieser Datenpunkt aus dem Datensatz genommen werden. Die Herausnahme des Datenpunktes
+kann die Datenmenge um viele Punkte verkürzen und somit die Präzision des Modells um einiges verringern.
+Daher gibt es auch die Möglichkeit diese Daten aus den übrigen Datenpunkten auszuwerten, indem man Interpolations-
+verfahren anwendet. Besonders geeignet sind hierfür der Mittelwert der anderen Daten dieses Features oder 
+das Einsetzen des Wertes, welcher am häufigsten vorkommt. 
+\\
+Bei kategoralen Daten gibt es Unterschiede zwischen ordinalen und nominalen Merkmalen. Ordinale Merkmale sind
+zwar keine Zahlen, haben aber eine Ordnung untereinander und können so durch natürliche Zahlen, samt ihrer Ordnung,
+dargestellt werden. Bei nominalen Merkmalen wird hier einfach eine Liste mit binären Werten verwendet um die Klasse
+zu beschreiben.
+\\
+Ebenfalls gehört die Auffteilung in Testdaten und Trainingsdaten zur Datenvorverarbeitung. Eine geeignete Auswahl
+stellt die Minimierung an Informationsverlust durch Verlust der Trainingsdaten, also auch die Maximierung der
+Fehlerabschätzung durch Testdaten da. Danach werden die Daten entweder normiert 
+
+\begin{equation}
+x_i^* = \frac{x_i-x_{min}}{x_{max}-x_{min}}
+\end{equation}
+
+oder standardisiert.
+
+\begin{equation}
+x_i^* = \frac{\mu_i -x_{i} }{\sigma_i}
+\end{equation}
+ 
+Normierte Daten werden immer auf das Intervall von [0;1] begrenzt, während standatisierte Daten um einen Mittelwert
+herum, gestaucht mit der Standardabweichung, ein besseres Maß darstellt, da die standartisierten Daten bessere
+Übersicht über ungewöhnlich hohe oder kleine Daten geben und bei Auftreten dieser auch nicht so empfindlich ist,
+was die Werte der anderen Daten angeht.
+
+Die Auswahl aussagekräftiger Merkmale reduziert die Berechnungslast und ist deswegen, besonders bei sehr großen Datenmengen
+sehr wichtig. Zur Komplexitätsreduktion dient hier die L2- und L1-Regulierung. 
+
+\begin{equation}
+L1 : ||\omega||_1 = \sum_{j=1}^n \omega_j
+\end{equation}
+
+\begin{equation}
+L2 : ||\omega||^2_2 = \sum_{j=1}^n \omega_j^2
+\end{equation}
+
+
+Beide Regulierungen werden als Terme zur Funktion, die es zu optimieren gilt, addiert und fördern Merkmale, die keinen Einfluss auf das Ergebnis 
+haben heraus. Diese Merkmale können dann herausgenommen werden, indem man schaut, welche Gewichtungen im finalen
+Gewichtungsvektor Null sind und damit keinen Einfluss auf das Ergebnis haben.
+
+Ein weiteres Verfahren zur Merkmalsreduktion ist die sequenzielle Rückwärtsauswahl von Merkmalen. 
+Diesem Algorithmus liegt die Idee zugrunde, aus einem k-dimensionalem Raum einen d-dimensionalem Raum
+zu machen, indem wir (k-d)-mal das Modell mit einer kleineren Datenmenge trainieren und dabei jeweils ein Feature
+auslassen. Die Leistung des Modells wird dann von der ursprünglichen Leistung des Modells subtrahiert und 
+es wird das Merkmal entfernt, welches die geringste Leistungseinbuße vorweißt. Dieser Algorithmus 
+schaut also auch nur auf Einzelmerkmale, vernachlässigt aber das Gesamtbild und Features, die auf Langzeit in
+Kombinationen mit anderen Merkmalen sinnvolle Ergebnisse liefern. Allerdings ist dies ein kleiner Kritikpunkt
+und der Algorithmus funktioniert immer noch sehr gut.
+
+Mit der Random-Forests-Methode lassen sich die Merkmale ebenfalls reduzieren, indem man einen Random-Forest mit 
+diesen Daten trainiert und dabei schaut, auf welche Features dieser besonderen Wert legt. Die Features, die
+keine besondere Bedeutung haben, können somit aus der originalen Trainingsdatenmenge herausgenommen werden.
+
+\end{document}
