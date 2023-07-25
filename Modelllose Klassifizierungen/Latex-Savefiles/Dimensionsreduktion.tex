@@ -166,12 +166,56 @@ Die Kernel-Hauptkomponente funktioniert ebenfalls wie die PCA, transformiert abe
 Der Kerneltrick ersetzt das Skalarprodukt zweier Merkmalsvektoren durch eine Kernelfunktion, die sich die Transformation spart.
 
 \begin{equation}
-k(x^{(i)}, x^{(j)}) = \phi(x^{h})
+k(x^{(i)}, x^{(j)}) = \phi(x^{(i)}) \phi(x^{(j)})
 \end{equation} 
 
-Die Eigenwertgleichung reduziert sich dann zu dem Folgendem 
+Dadurch lässt sich die Varianz neu berechnen.
 
+\begin{equation}
+\Cov(x^{(i)}, x^{(j)}) = \sum^k_{n=1} \phi(x_n^{(i)}) \phi(x_n^{(j)})
+\end{equation}
+
+Durch Einsetzen in die Kovarianzmatrix und das Einsetzen ergibt sich:
+
+\begin{equation}
+\frac{1}{k} \phi(X) \phi(x)^T \cdot a = \lambda a
+\end{equation}
+
+Dies ergibt die Kernelmatrix $K$:
+
+\begin{equation}
+\frac{1}{k} K \cdot a = \lambda a
+\end{equation}
+
+Es gibt viele verschiedene Kernelfunktionen, allerdings ist eine sehr geläufige die des gaußschen Kernels, da die Funktion radialsymmetrisch ist und als Ähnlichkeitsmaß nur Werte zwischen $0$ und $1$ annehmen kann.
+
+\begin{equation}
+k(x^{(i)}, x^{(j)}) = e^{-\frac{||x^{(i)} - x^{(j)}||^2}{2 \sigma^2}}
+\end{equation} 
+
+Die Kovarianz- oder die Streuungsmatrix sind hier Werte der Zusammenhänge zwischen zwei konkreten Merkmalsdatensätzen. Durch den Kerneltrick lässt sich dieses Ähnlichkeitsmaß direkt mit der Kernelfunktion erstellen. Dabei wird die Ähnlichkeitsmatrix oder Kernelmatrix $K$
+mit dem jeweiligen Wert der Kernelfunktion belegt.
+
+\begin{equation}
+K_{i,j} = k(x^{(i)}, x^{(j)})
+\end{equation} 
+
+
+Nun wird das gleiche Verfahren wie bei der PCA angewandt. Dabei kommen, wie mit den größten Eigenvektoren, die Werte der größten Ähnlichkeit hervor. Dabei geben die Eigenvektoren wieder die Achsen an, allerdings nicht die Achsen der Originaldaten, sondern die Achsen der projezierten Daten. Nun kann die PCA wieder angewandt werden. Dieses Verfahren wird auch oft angewandt, wenn die ursprüngliche Testdatenmenge keine lineare Separabilität hat, nach einer zusätzlichen Dimension allerdings schon.\\
+Die Transformation neuer Daten erfolgt mit der Formel:
+
+\begin{equation}
+\phi(X)^t a = v
+\end{equation}
  
+Dies lässt sich durch den Kerneltrick weiter vereinfachen.
 
+\begin{equation}
+v = \sum_{i=1}^{k} a^{(i)} \phi(X')^T \phi(X)
+\end{equation}
+
+\begin{equation}
+v = \sum_{i=1}^{k} a^{(i)} k(X, X^T)
+\end{equation}
 
 \end{document}
