@@ -1,0 +1,177 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+
+\begin{document}
+\section{Dimensionsreduktion}
+Die Dimensionsreduktion ist ein effektives Verfahren zur Verminderung der Komplexität des Modells. Das Ziel ist also Merkmale herauszufiltern, die den kleinsten oder keinen Zusammenhang mit dem Endergebnis haben.. Dies kann durch verschiedene Verfahren passieren. 
+\subsection{Hauptkomponentenanalyse}
+In der Hauptkomponentenanalyse werden die $k$-dimensionalen Daten $x$ in einen $d$-dimensionalen Raum zu Daten $y$ transformiert. \\
+Das Ziel der Hauptkomponentenanalyse besteht darin die Varianz der Messdaten untereinander, sowie die Kovarianz auszuwerten. Die Varianz 
+$\Var(x_i)$ gibt dabei Aufschluss über die Streuung der Daten, während die Kovarianz $\Cov(x_i, x_j)$ die lineare Abhängigkeit zwischen zwei Variablen misst. Eine hohe Varianz bedeutet eine große Streuung der Daten und damit einen höheren Einfluss dieses Features auf die Klassifizierung, während ein positiver Wert der Kovarianz einen linearen, ein negativer einen entgegengesetzten linearen und eine Null keinen statistischen linearen Zusammenhang aufweißt.
+
+\begin{equation}
+\Var(x^{(i)}) = \sum_{k=0}^n (x_k^{(i)}-\mu^{(i)})^2
+\end{equation}
+
+\begin{equation}
+\Cov(x^{(i)}, x^{j}) = \sum_{k=0}^n (x_k^{(i)}-\mu^{(i)}) (x_k^{(j)}-\mu^{(j)})
+\end{equation}
+
+Aus den Definitionen geht hervor:
+
+\begin{equation}
+\Cov(x^{(i)}, x^{i}) = \Var(x^{(i)}) 
+\end{equation}
+
+Ebenfalls gilt die Symmetrie:
+
+\begin{equation}
+\Cov(x^{(j)}, x^{i}) = \Cov(x^{(i)}, x^{(j)}) 
+\end{equation}
+
+Nun wollen wir die Komponente mit der maximalen Varianz finden. Dazu definieren wir einen normierten Vektor $a$, für den gilt:
+
+\begin{equation}
+\sum_{i = 1}^k a_i^2 = 1
+\end{equation}
+
+Die Bedeutung dieses Vektors wird später deutlich. Nun wollen wir die Varianz der Daten maximieren und schauen, welche Vektorkomponenten von $a$ zur maximalen Varianz führen. Die Funktion 
+
+\begin{equation}
+\Var(a \cdot x) = \Var( \sum_{i = 1}^k a_i x_i)
+\end{equation}
+
+wird unter der Nebenbedingung:
+
+\begin{equation}
+\sum_{i = 1}^k a_i^2 = 1
+\end{equation}
+optimiert. Dafür wird das Verfahren des Lagrange-Multiplikators angewandt. Die folgenden Bedingungen müssen dabei erfüllt sein:
+
+\begin{equation}
+\forall j : \frac{\partial}{\partial a_j} \Var(a \cdot x) = \lambda \frac{\partial}{\partial a_j} \sum_{i = 1}^k a_i^2 
+\end{equation}
+
+Durch die Ableitungsregel für Polynome gilt für die linke Seite:
+
+\begin{equation}
+\forall j : \frac{\partial}{\partial a_j} \Var(a \cdot x) = 2 \lambda a_j 
+\end{equation}
+
+Für die rechte Seite gilt nach Einsetzen der Regel unter der Annahme bereits standartisierter Daten:
+
+\begin{equation}
+\forall j : \frac{\partial}{\partial a_j} \sum_{k=0}^n (a \cdot x)^2 = 2 \lambda a_j 
+\end{equation}
+
+Durch die Kettenregel gilt also:
+
+\begin{equation}
+\forall j : 2 x_j \sum_{k=0}^n (a \cdot x) = 2 \lambda a_j 
+\end{equation}
+
+Dies kann man in die Klammer ziehen und auf beide Seiten durch 2 teilen.
+
+\begin{equation}
+\forall j :  \sum_{k=0}^n x_j (a \cdot x) =  \lambda a_j 
+\end{equation}
+
+Durch das Ausmultiplzieren der Klammer gilt:
+
+\begin{equation}
+\forall j :  \sum_{k=0}^n  \sum_{i = 1}^k a_i x_i x_j =  \lambda a_j 
+\end{equation}
+
+Dies lässt sich mit der Kovarianz zusammenfassen:
+
+\begin{equation}
+\forall j :  \sum_{k=0}^n  \sum_{i = 1}^k a_i \Var(i x_i, x_j) =  \lambda a_j 
+\end{equation}
+
+Diese Bedingungen entsprechen einer Eigenwertgleichung mit der Kovarianzmatrix $C$. Damit lassen sich die Gleichungen so schreiben:
+
+\begin{equation}
+C \cdot a=  \lambda a 
+\end{equation}
+
+Dies hat zur Folge, dass keiner der Eigenvektoren $a_i$ in die gleiche Richtung wie ein anderer Eigenvektor $a_j$ zeigt, da alle Eigenvektoren orthogonal zueinander sind. Nun gilt ebenfalls für die Varianz mit dem Ausmultiplizieren der Klammer:
+
+\begin{equation}
+\Var(a \cdot x) = a^T \cdot C \cdot a
+\end{equation}
+
+Durch die obige Gleichung gilt für die Kovarianzmatrix:
+
+\begin{equation}
+\Var(a \cdot x) = a^T \lambda a 
+\end{equation}
+
+Aus der Vektormultipliaktion gilt:
+
+\begin{equation}
+\Var(a \cdot x) = \lambda \sum_{i=1}^k a_i^2
+\end{equation}
+
+Durch die Randbedingung des Vektors kann dies vereinfacht werden.
+
+\begin{equation}
+\Var(a_n \cdot x) = \lambda_n 
+\end{equation}
+
+Somit sind die Eigenwerte dieser Vektoren also auch die Varianz der Daten in der Richtung des Vektors $a$. Damit können also durch die obige Eigenwertgleichung bestimmt werden, welche Richtung der Daten am meisten Varianz hat und damit die meisten Informationen birgt.
+Der Gesamtanteil der Varianz einer Richtung ergibt sich durch
+
+\begin{equation}
+p = \frac{\lambda_n} {\sum_{i=1}^k \lambda_i} 
+\end{equation}
+
+Nün können die $d$ Eigenvektoren mit der größten Varianz zur Kosntruktion einer Matrix genutzt werden, die die Daten in einen kleineren
+Raum transformiert, indem aus den $d$ Vektoren$a_i$ mit den größten Eigenwerten eine Matrix $A$ der Dimensionen $d \times k$ zu machen. Für diese Matrix gilt:
+
+\begin{equation}
+X' = A \cdot X
+\end{equation}
+
+Dabei ist $A$ die Zusammensetzung aus den Eigenvektoren mit dem größtem Eigenwert. Für jeden Eintrag gilt also, wenn $l$ die Ordnung der Eigenwerte darstellt und P der Eigenvektor.
+
+\begin{equation}
+A_{l,n} = a_n \in P_l
+\end{equation}
+
+Diese Transformation der Daten optimiert also die Informationen nach Informationsgehalt, also der Varianz.
+ 
+\section{Lineare Diskriminanzanalyse}
+Die lineare Diskriminanzanalyse funktioniert nach dem ähnlichen Prinzip, wie die Hauptkomponentenanalyse, allerdings mit einer anderen Matrix und dem Ziel die separierendsten Merkmale herauszufiltern. Dabei werden die Punkte ebenfalls auf diese Hyperebene transformiert um die Varianz zu minimieren. Die Matrizen sind hierbei die Streumatrix $S_m$ der einzelnen Klassem und die Streumatrix $S_w$ der Klassen untereinander, anstatt der Kovarianzmatrix. Das Herausfinden der Achsen mit dem höchsten Informationsgehalt wird wieder durch die Eigenwertgleichung 
+
+\begin{equation}
+v_n \cdot S_w \cdot S_m^{-1} = \lambda \cdot v_n
+\end{equation} 
+
+erreicht. Die Maximierung der Funktion ergibt sich durch die Maximierung der Streuung zwische den Klassen und die Minimierung der Streuung der Daten in den Klassen. Die Streuung der Daten ist ein Maß für de Informationsgehalt der Daten. Die Maximierung der Streuung zwischen den Datenklassen und die Minimierung der Einzelsteuung maximieren dabei die Abstände zwischen den Klassen und machen sie somit spearierbarer, indem gleiche Klassen eher zusammenrücken und unterschiedliche Klassen asueinander rücken, was sich in der Streuung niederschlägt.\\
+Durch das selbige Verfahren der Optimierung durch das Verfahren von Lagrange wird hier die Eigenwertgleichung hergeleitet. Dabei ist $S_m^-1$ die inverse Matrix der Streuung unter den Klassen.
+
+\section{Kernel-Hauptkomponente für nichtlineare Zuordnungen}
+Die Kernel-Hauptkomponente funktioniert ebenfalls wie die PCA, transformiert aber die Merkmale in einen höheren Merkmalsraum um dort die PCA durchzuführen. Um nun die Ähnlichkeit zweier Merkmalsvektoren in einem höherdimensionalen Raum festzustellen wird hier der Kernel-Trick angewandt. \\
+Der Kerneltrick ersetzt das Skalarprodukt zweier Merkmalsvektoren durch eine Kernelfunktion, die sich die Transformation spart.
+
+\begin{equation}
+k(x^{(i)}, x^{(j)}) = \phi(x^{h})
+\end{equation} 
+
+Die Eigenwertgleichung reduziert sich dann zu dem Folgendem 
+
+ 
+
+
+\end{document}
