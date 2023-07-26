@@ -1,0 +1,54 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\DeclareMathOperator{\KKR}{KKR}
+\DeclareMathOperator{\PR}{PR}
+\DeclareMathOperator{\PF}{PF}
+\DeclareMathOperator{\NF}{NF}
+\DeclareMathOperator{\NR}{NR}
+\DeclareMathOperator{\FQ}{FQ}
+\DeclareMathOperator{\FPR}{FPR}
+\DeclareMathOperator{\RPR}{RPR}
+\DeclareMathOperator{\GEN}{GEN}
+\DeclareMathOperator{\TQ}{TQ}
+\DeclareMathOperator{\F}{F}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\argmax}{argmax}
+
+
+\begin{document}
+\section{Ensemble-Learning}
+Nutzt man mehrere Klassifizierer und lässt diesen einen Mehrheitsentscheid durchführen, so gilt dies als Ensemble-Learning.\\
+Es gibt verschiedene Mehrheiten, entweder die absolute Mehrheit, einen Gesamtanteil von über $50\% $ oder die relative Mehrheit, bei der es reicht einfach die meisten Stimmen zu haben. Nutzt man nun binäre Klassifizierer, die als Output bei einer Klassifizierungen $-1$ und bei der anderen Klassifizierung $+1$, so gilt für den Mehrheitsentscheid der Klassifzierer $C$:
+
+\begin{equation}
+C(x) = \sign[\sum_{i=1}^n C_i(x)]
+\end{equation}
+
+Ein etwas komplexerer Entscheidungsalgorithmus ist:
+
+\begin{equation}
+\hat y = \argmax_j[\sum_{i=1}^n \omega_i \chi_A (C_i(x)=j)]
+\end{equation}
+
+Dabei ist $\omega_i$ das Gewicht des $i$-ten Klassifizierers. Somit kann man zuverlässigere Klassifizierer stärker gewichten als Klassifizierer, die
+nicht so zuverlässig sind. Die $\argmax$-Funktion gibt den meistgenannten Wert zurück und die charakteristische Funktion gibt die Klassenbezeichnung zurück. Eine modifizierte Variante ist:
+
+\begin{equation}
+\hat y = \argmax_j[\sum_{i=1}^n \omega_i p_{ij}]
+\end{equation}
+
+Die Wahrscheinlichkeiten $p$ sind die Wahrscheinlichkeiten, dass das Objekt zur Klasse $j$ gehört.
+
+\section{AdaBoost}
+Adaboost arbeitet mit vielen schwachen Klassifizierern, die jeweils aus den falschklassifizierten Daten der vorherigen Klassifizierer lernen und dann die Entscheidung durch einen Mehrheitsentscheid treffen.
+
+\end{document}

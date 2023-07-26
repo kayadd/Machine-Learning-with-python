@@ -1,0 +1,91 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\DeclareMathOperator{\KKR}{KKR}
+\DeclareMathOperator{\PR}{PR}
+\DeclareMathOperator{\PF}{PF}
+\DeclareMathOperator{\NF}{NF}
+\DeclareMathOperator{\NR}{NR}
+\DeclareMathOperator{\FQ}{FQ}
+\DeclareMathOperator{\FPR}{FPR}
+\DeclareMathOperator{\RPR}{RPR}
+\DeclareMathOperator{\GEN}{GEN}
+\DeclareMathOperator{\TQ}{TQ}
+\DeclareMathOperator{\F}{F}
+
+\begin{document}
+\section{k-fache Kreuzvalidierung}
+Bei der k-fachen Kreuzvalidierung werden die Trainingsdaten $k$-mal in Testdaten und Validierungsdaten getrennt. Die Klassifizierer werden dann mit den 
+Trainingsdaten trainiert und mit den Testdaten getestet und danach wieder angepasst.  Das Testen der Klassifizierer wird mit diesen Daten vollzogen und 
+danach wird das beste Model ausgewählt.
+\section{Die Lernkurve}
+Bei der Lernkurve werden die Korrektklassifizierungsrate des Modells als $y$ gegenüber der Anzahl der Daten. Bei der gewünschten Klassifizierungsrate als 
+Konstante kann es sein, dass es einen sehr großen Bias gibt, das heißt die Korrektklassifizierungsrate der Test-, sowie der Vaildierungsdaten pendeln sich weit
+unter der Konstante der Klassifizierungsrate ein. Bei einer sehr hohen Varianz scheinen die Kurven beider sehr langsam gegen die angepeilte Rate zu konvergieren,
+das heißt das Modell läuft die Gefahr einer Überanpassung. Scheinen beide Kurven schnell gegen die angepeilte Korrektklassifizierungsrate zu konvergieren hat
+man einen guten Kompromiss zwischen Bias und Überanpassung gefunden.
+\section{Abstimung durch Rastersuche}
+Bei Hyperparametern der Modelle kann durch reine Brute-Force-Methoden der optimale Hyperparameter für das Modell anhand der Korrektklassifizierungsrate bestimmt werden.
+\section{Wahrheitsmatrix}
+Bei einer Wahrheitsmatrix gibt es vier Fälle. Entweder es wurde so klassifiziert, wie es sein sollte oder es wurde das Gegenteil klassifiziert. Das ergibt vier Werte, die man sehr einfach auswerten kann. 
+Die Korrektklassifizierungsrate berechnet sich dann konkret zu
+
+\begin{equation}
+\KKR = \frac{\PR+\PF}{\NF+\NR+\PR+\PF}
+\end{equation}
+
+Die Fehlerquote berechnet sich dann durch
+
+\begin{equation}
+\FQ = 1-\KKR = \frac{\NF+\NR}{\NF+\NR+\PR+\PF}
+\end{equation}
+
+Die Richtig-Positiv-Rate berechnet sich zu:
+
+\begin{equation}
+\RPR = \frac{\PR}{\NR+\PR}
+\end{equation}
+
+Die Falsch-Positiv-Rate:
+
+\begin{equation}
+\FPR = \frac{\PF}{\PF+\NF}
+\end{equation}
+
+Andere Werte zur Messung der Leistung sind die Genauigkeit
+
+\begin{equation}
+\GEN = \frac{\PR}{\NR+\PR}
+\end{equation}
+
+Und die Trefferquote:
+
+\begin{equation}
+\TQ = \frac{\PR}{\NF+\PR}
+\end{equation}
+
+Das $F1$,Maß berechnet sich dann zu:
+
+\begin{equation}
+\F 1= 2 \frac{\GEN \times \TQ}{\GEN+\TQ}
+\end{equation}
+
+Für nichtbinäre Klassifizierer gelten dann die Formeln bei $k$ Klassen:
+
+\begin{equation}
+\GEN_{mikro} = \frac{\sum_{n=1}^k \PR_n}{\sum_{n=1}^k (\NR_n+\PR_n)}
+\end{equation}
+
+\begin{equation}
+\GEN_{makro} = \frac{\sum_{n=1}^k Gen_n}{k}
+\end{equation}
+
+\end{document}
