@@ -14,7 +14,7 @@ y_combined = data[5]
 x_train_std = data[2]
 x_combined_std = data[4]
 
-# Initialisiert die logistische Regression mit dem
+# Initialisiert die logistische Regression mit dem Regulierungsparameter C der L2-Regulierung.
 lr = LogisticRegression(C=1000.0, random_state=0)
 lr.fit(x_train_std, y_train)
 
